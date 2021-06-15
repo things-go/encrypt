@@ -25,8 +25,113 @@ s
 
 ## Example
 
-[embedmd]:# (_example/main.go go)
+[embedmd]:# (_example/block/main.go go)
 ```go
+package main
+
+import (
+	"bytes"
+	"crypto/aes"
+	"fmt"
+
+	"github.com/things-go/encrypt"
+)
+
+func main() {
+	key := []byte("12e41090cd8011ebbe031717db2895df")
+	plainText := []byte("im plantext plantext")
+
+	blk, err := encrypt.NewBlockCipher(key, aes.NewCipher)
+	if err != nil {
+		panic(err)
+	}
+
+	cipherText, err := blk.Encrypt(plainText)
+	if err != nil {
+		panic(err)
+	}
+	got, err := blk.Decrypt(cipherText)
+	if err != nil {
+		panic(err)
+	}
+	if bytes.Equal(plainText, got) {
+		fmt.Println("encrypt success")
+	} else {
+		panic("not equal")
+	}
+}
+```
+
+[embedmd]:# (_example/stream/main.go go)
+```go
+package main
+
+import (
+	"bytes"
+	"crypto/aes"
+	"crypto/cipher"
+	"fmt"
+
+	"github.com/things-go/encrypt"
+)
+
+func main() {
+	key := []byte("0123456789123456")
+	plainText := []byte("im plantext")
+
+	blk, err := encrypt.NewStreamCipher(key, aes.NewCipher, encrypt.WithStreamCodec(cipher.NewCTR, cipher.NewCTR))
+	if err != nil {
+		panic(err)
+	}
+
+	cipherText, err := blk.Encrypt(plainText)
+	if err != nil {
+		panic(err)
+	}
+	got, err := blk.Decrypt(cipherText)
+	if err != nil {
+		panic(err)
+	}
+	if bytes.Equal(plainText, got) {
+		fmt.Println("encrypt success")
+	} else {
+		panic("not equal")
+	}
+}
+```
+
+[embedmd]:# (_example/cipher/main.go go)
+```go
+package main
+
+import (
+	"bytes"
+	"fmt"
+
+	"github.com/things-go/encrypt"
+)
+
+func main() {
+	password := "pass_word"
+	plainText := []byte("hello world")
+
+	cip, err := encrypt.NewCipher("aes-128-cfb", password)
+	if err != nil {
+		panic(err)
+	}
+	// encrypt
+	cipherText := make([]byte, len(plainText))
+	cip.Write.XORKeyStream(cipherText, plainText)
+	// decrypt
+	got := make([]byte, len(cipherText))
+	cip.Read.XORKeyStream(got, cipherText)
+
+	if bytes.Equal(got, plainText) {
+		fmt.Println("encrypt success")
+	} else {
+		panic("not equal")
+	}
+}
 ```
 
 ## License
