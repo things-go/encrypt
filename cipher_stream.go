@@ -23,28 +23,19 @@ import (
 	"golang.org/x/crypto/xtea"
 )
 
-// Stream stream newCipher
-type Stream struct {
-	NewStream func(block cipher.Block, iv []byte) cipher.Stream
-}
-
-// New new with newCipher and key,iv
-func (sf *Stream) New(key, iv []byte, newCipher func(key []byte) (cipher.Block, error)) (cipher.Stream, error) {
-	block, err := newCipher(key)
-	if err != nil {
-		return nil, err
-	}
-	return sf.NewStream(block, iv), nil
-}
-
 // NewBlowfishCipher new blowfish cipher
+// The key argument should be the Blowfish key, from 1 to 56 bytes.
 func NewBlowfishCipher(key []byte) (cipher.Block, error) { return blowfish.NewCipher(key) }
 
-// NewCast5Cipher new cast5 cipher
+// NewCast5Cipher new cast5 cipher,
+// The key size should 32
 func NewCast5Cipher(key []byte) (cipher.Block, error) { return cast5.NewCipher(key) }
 
 // NewTwofishCipher new twofish cipher
+// The key argument should be the Twofish key, 16, 24 or 32 bytes.
 func NewTwofishCipher(key []byte) (cipher.Block, error) { return twofish.NewCipher(key) }
 
 // NewXteaCipher new xtea cipher
+// The key argument should be the XTEA key.
+// XTEA only supports 128 bit (16 byte) keys.
 func NewXteaCipher(key []byte) (cipher.Block, error) { return xtea.NewCipher(key) }

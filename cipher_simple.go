@@ -19,27 +19,10 @@ import (
 	"crypto/md5"
 	"crypto/rc4"
 	"encoding/binary"
-	"strconv"
 
 	"golang.org/x/crypto/chacha20"
 	"golang.org/x/crypto/salsa20/salsa"
 )
-
-// KeySizeError key size error
-type KeySizeError int
-
-// Error implement Error interface
-func (k KeySizeError) Error() string {
-	return "encrypt: invalid key size " + strconv.Itoa(int(k))
-}
-
-// IvSizeError iv size error
-type IvSizeError int
-
-// Error implement Error interface
-func (i IvSizeError) Error() string {
-	return "encrypt: invalid iv size " + strconv.Itoa(int(i))
-}
 
 // NewRc4Md5 new rc4-md5 key size should 16, iv size should one of 6,16
 func NewRc4Md5(key, iv []byte) (cipher.Stream, error) {
