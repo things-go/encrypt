@@ -280,11 +280,11 @@ func md5sum(b []byte) []byte {
 // New new with newCipher and key,iv
 func newCipherWithCodec(key, iv []byte,
 	newCipher func(key []byte) (cipher.Block, error),
-	NewStream func(block cipher.Block, iv []byte) cipher.Stream,
+	newStream func(block cipher.Block, iv []byte) cipher.Stream,
 ) (cipher.Stream, error) {
 	block, err := newCipher(key)
 	if err != nil {
 		return nil, err
 	}
-	return NewStream(block, iv), nil
+	return newStream(block, iv), nil
 }
